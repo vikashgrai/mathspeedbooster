@@ -1,4 +1,3 @@
-// bot.js
 import TelegramBot from 'node-telegram-bot-api';
 import dotenv from 'dotenv';
 import http from 'http';
@@ -7,6 +6,32 @@ dotenv.config();
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
 
 const users = {};
+
+const compliments = [
+  "⚡ That was lightning fast — like The Flash!",
+  "🦸 You answered like Superman on a good day!",
+  "🕷️ That was Spidey-speed! Sharp and swift!",
+  "🧠 Brain power level: Iron Man intellect!",
+  "🗡️ You're as fast as Deadpool dodging bullets!",
+  "🚀 That was rocket-fast — even faster than Captain Marvel!",
+  "🔮 Quick thinking like Doctor Strange!",
+  "🦇 You’re stealthy and quick like Batman in the night!",
+  "💥 Hulk smash timing! That was fast!",
+  "🏹 Hawkeye would be proud of that precision!"
+];
+
+const burns = [
+  "🧊 Cold and slow — like Mr. Freeze on vacation.",
+  "🕷️ Even Aunt May could’ve beaten that!",
+  "🐌 That was slower than Thanos waiting for all the stones.",
+  "🦹‍♂️ Lex Luthor thinks you need more brain cells.",
+  "💤 Did you fall asleep like Captain America in ice?",
+  "😒 Ultron is disappointed in your logic circuits.",
+  "🐢 You move like a ninja turtle with a flat tire.",
+  "👎 Even Loki says that was a bad trick.",
+  "🔩 Iron Monger thinks you're rusty.",
+  "🧟‍♂️ That was zombie speed, not hero speed."
+];
 
 function generateQuestion(mode) {
   let a, b, question, answer;
@@ -145,7 +170,7 @@ function handleTimeout(chatId) {
   user.current++;
   bot.sendMessage(chatId, `⏰ Time's up, you slow 🐢 turtle!
 Let's move on...`);
-  setTimeout(() => sendQuestion(chatId), 1500);
+  setTimeout(() => sendQuestion(chatId), 5000);
 }
 
 bot.on("message", (msg) => {
@@ -164,13 +189,14 @@ bot.on("message", (msg) => {
 
   if (guess === correct) {
     user.score++;
-    bot.sendMessage(chatId, `🚀 You're a fast 🐆 cheetah! Correct answer!`);
-    setTimeout(() => sendQuestion(chatId), 1500);
+    const compliment = compliments[Math.floor(Math.random() * compliments.length)];
+    bot.sendMessage(chatId, `✅ ${compliment}`);
   } else {
-    bot.sendMessage(chatId, `❌ Oops! That's wrong.
-The correct answer was *${correct}*`, { parse_mode: "Markdown" });
-    setTimeout(() => sendQuestion(chatId), 15000);
+    const burn = burns[Math.floor(Math.random() * burns.length)];
+    bot.sendMessage(chatId, `❌ Wrong! The correct answer was *${correct}*\n${burn}`, { parse_mode: "Markdown" });
   }
+
+  setTimeout(() => sendQuestion(chatId), 5000);
 });
 
 // Keep-alive HTTP server for Render
